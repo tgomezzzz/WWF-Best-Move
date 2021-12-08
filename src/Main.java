@@ -9,7 +9,7 @@ import java.awt.*;
 
 public class Main {
 
-    final static int FRAME_SIZE = 800;
+    final static int FRAME_SIZE = 700;
 
     public static void main(String[] wordsWithFriends) {
         Trie words = buildTrie();
