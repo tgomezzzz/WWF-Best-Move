@@ -18,7 +18,6 @@ public class Tile {
         this.paint = paint_;
         this.mult = Mult.NONE;
         this.letter = null;
-
     }
 
     public Tile(Mult mult_) {
@@ -35,13 +34,13 @@ public class Tile {
     /**
      * Consider adjusting return type, ie returning newly available spaces to play on.
      */
-    private void setLetter(Letter l) {
+    protected void setLetter(Letter l) {
         this.letter = l;
     }
 
-    private int r;
-    private int c;
-    private Rectangle2D.Double paint;
-    private Mult mult;
-    private Letter letter;
+    protected int r;
+    protected int c;
+    protected Rectangle2D.Double paint;
+    protected Mult mult;
+    protected Letter letter;
 }
