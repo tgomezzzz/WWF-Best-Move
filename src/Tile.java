@@ -37,12 +37,16 @@ public class Tile {
     }
 
     public void paintTile(Graphics2D g) {
-        g.setColor(color);
-        if (isSelected) {
-            g.setColor(color.darker());
+        if (letter != null) {
+            letter.drawLetter(g);
+        } else {
+            g.setColor(color);
+            if (isSelected) {
+                g.setColor(color.darker());
+            }
+            g.fill(paint);
+            g.draw(paint);            
         }
-        g.fill(paint);
-        g.draw(paint);
     }
 
     protected void drawText(Graphics2D g, String text) {
