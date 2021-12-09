@@ -1,5 +1,6 @@
 import java.awt.geom.Rectangle2D;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 
 public class Tile {
@@ -12,9 +13,11 @@ public class Tile {
         TRIPLE_WORD
     }
     
-    public Tile(int r_, int c_, Rectangle2D.Double paint_) {
+    public Tile(int r_, int c_, int fontSize_, Rectangle2D.Double paint_) {
         this.r = r_;
         this.c = c_;
+        this.color = new Color(209, 209, 209);
+        this.fontSize = fontSize_;
         this.paint = paint_;
         this.mult = Mult.NONE;
         this.letter = null;
@@ -25,10 +28,27 @@ public class Tile {
         this.letter = null;
     }
 
+    public void select() {
+        this.isSelected = true;
+    }
+
+    public void unselect() {
+        this.isSelected = false;
+    }
+
     public void paintTile(Graphics2D g) {
-        g.setColor(Color.LIGHT_GRAY);
+        g.setColor(color);
+        if (isSelected) {
+            g.setColor(color.darker());
+        }
         g.fill(paint);
         g.draw(paint);
+    }
+
+    protected void drawText(Graphics2D g, String text) {
+        g.setFont(new Font("Avenir", Font.PLAIN, fontSize));
+        g.setColor(Color.WHITE);
+        g.drawString(text, getX() - (g.getFontMetrics().stringWidth(text) / 2), getY() + 8);
     }
 
     /**
@@ -38,8 +58,19 @@ public class Tile {
         this.letter = l;
     }
 
+    protected int getX() {
+        return (int) paint.getCenterX();
+    }
+
+    protected int getY() {
+        return (int) paint.getCenterY();
+    }
+
     protected int r;
     protected int c;
+    protected boolean isSelected;
+    protected Color color;
+    protected int fontSize;
     protected Rectangle2D.Double paint;
     protected Mult mult;
     protected Letter letter;
