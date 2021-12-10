@@ -1,16 +1,16 @@
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.Color;
+import java.awt.Font;
 
 public class Letter {
     
-    public Letter() {
-
-    }
-
     public Letter(char letter_, Rectangle2D.Double paint_) {
         this.letter = letter_;
-        this.val = getLetterValue(letter_);
-        this.paint = paint;
+        this.val = getLetterValue(letter);
+        this.color = new Color(253, 217, 181);
+        this.isSelected = false;
+        this.paint = paint_;
     }
 
     private int getLetterValue(char letter) {
@@ -23,12 +23,51 @@ public class Letter {
     }
 
     public void drawLetter(Graphics2D g) {
+        if (isSelected) {
+            g.setColor(color.darker());
+        } else {
+            g.setColor(color);
+        }
+        g.fill(paint);
+        g.draw(paint);
+        drawLetter(letter, g);
+        drawValue(val, g);
+    }
 
+    private void drawLetter(char c, Graphics2D g) {
+        String s = Character.toString(c);
+        g.setFont(new Font("Avenir", Font.PLAIN, LETTER_SIZE));
+        g.setColor(Color.BLACK);
+        Rectangle2D strBounds = g.getFontMetrics().getStringBounds(s, g);
+        g.drawString(s, (int) (paint.getCenterX() - strBounds.getWidth() / 2), 
+                        (int) (paint.getCenterY() + strBounds.getHeight() / 2.7));
+    }
+
+    private void drawValue(int val, Graphics2D g) {
+        String s = Integer.toString(val);
+        g.setFont(new Font("Avenir", Font.PLAIN, VAL_SIZE));
+        g.setColor(Color.BLACK);
+        Rectangle2D strBounds = g.getFontMetrics().getStringBounds(s, g);
+        g.drawString(s, (int) (paint.getCenterX() + (paint.getWidth() / 3) - strBounds.getWidth() / 2), 
+                        (int) (paint.getCenterY() - (paint.getHeight() / 5.2)));
+    }
+
+    public void select() {
+        isSelected = true;
+    }
+
+    public void unselect() {
+        isSelected = false;
     }
 
     private char letter;
     private int val;
+    private Color color;
+    private boolean isSelected;
+    private Rectangle2D.Double paint;
 
+    static final int LETTER_SIZE = 25;
+    static final int VAL_SIZE = 13;
     static final int A_ASCII = 97;
     static final int Z_ASCII = 122;
     static final int[] LETTER_TO_VALUE = {

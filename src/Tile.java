@@ -18,22 +18,24 @@ public class Tile {
         this.c = c_;
         this.color = new Color(209, 209, 209);
         this.fontSize = fontSize_;
+        this.text = TEXT;
         this.paint = paint_;
         this.mult = Mult.NONE;
         this.letter = null;
     }
 
-    public Tile(Mult mult_) {
-        this.mult = mult_;
-        this.letter = null;
-    }
-
     public void select() {
-        this.isSelected = true;
+        isSelected = true;
+        if (letter != null) {
+            letter.select();
+        }
     }
 
     public void unselect() {
-        this.isSelected = false;
+        isSelected = false;
+        if (letter != null) {
+            letter.unselect();
+        }
     }
 
     public void paintTile(Graphics2D g) {
@@ -45,14 +47,17 @@ public class Tile {
                 g.setColor(color.darker());
             }
             g.fill(paint);
-            g.draw(paint);            
+            g.draw(paint);   
+            drawText(g, text);         
         }
     }
 
     protected void drawText(Graphics2D g, String text) {
         g.setFont(new Font("Avenir", Font.PLAIN, fontSize));
         g.setColor(Color.WHITE);
-        g.drawString(text, getX() - (g.getFontMetrics().stringWidth(text) / 2), getY() + 8);
+        Rectangle2D strBounds = g.getFontMetrics().getStringBounds(text, g);
+        g.drawString(text, (int) (paint.getCenterX() - strBounds.getWidth() / 2),
+                           (int) (paint.getCenterY() + strBounds.getHeight() / 4));
     }
 
     /**
@@ -60,6 +65,10 @@ public class Tile {
      */
     protected void setLetter(Letter l) {
         this.letter = l;
+    }
+
+    protected void setLetter(char c) {
+        this.letter = new Letter(c, paint);
     }
 
     protected int getX() {
@@ -75,7 +84,10 @@ public class Tile {
     protected boolean isSelected;
     protected Color color;
     protected int fontSize;
+    protected String text;
     protected Rectangle2D.Double paint;
     protected Mult mult;
     protected Letter letter;
+
+    private static final String TEXT = "";
 }

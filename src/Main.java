@@ -12,11 +12,11 @@ public class Main {
     final static int FRAME_SIZE = 700;
 
     public static void main(String[] wordsWithFriends) {
-        Trie words = buildTrie();
-        if (words == null) {
-            System.out.println("Unable to build dictionary. Exiting.");
-            return;
-        }
+        // Trie words = buildTrie();
+        // if (words == null) {
+        //     System.out.println("Unable to build dictionary. Exiting.");
+        //     return;
+        // }
 
         JFrame frame = new JFrame();
         Board b = new Board(FRAME_SIZE);

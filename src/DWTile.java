@@ -9,12 +9,13 @@ public class DWTile extends Tile {
     public DWTile(int r_, int c_, int fSize_, Rectangle2D.Double paint_) {
         super(r_, c_, fSize_, paint_);
         this.color = new Color(207, 85, 72);
+        this.text = TEXT;
         this.mult = Mult.DOUBLE_WORD;
     }
 
-    @Override
-    public void paintTile(Graphics2D g) {
-        super.paintTile(g);
-        super.drawText(g, TEXT);
-    }
+    // @Override
+    // public void paintTile(Graphics2D g) {
+    //     super.paintTile(g);
+    //     super.drawText(g, TEXT);
+    // }
 }

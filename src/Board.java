@@ -26,8 +26,8 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 		int fSize = tileSize / 2;
 		for (int i = 0; i < GRID_SIZE; i++) {
 			for (int j = 0; j < GRID_SIZE; j++) {
-				int xPos = i * (tileSize + LINE_WIDTH);
-				int yPos = j * (tileSize + LINE_WIDTH);
+				int xPos = j * (tileSize + LINE_WIDTH);
+				int yPos = i * (tileSize + LINE_WIDTH);
 				Rectangle2D.Double tile = new Rectangle2D.Double(xPos, yPos, tileSize, tileSize);
 				if (multTiles.containsKey(Arrays.asList(i, j))) {
 					switch (multTiles.get(Arrays.asList(i, j))) {
@@ -54,8 +54,8 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 	}
 
 	private void selectTile(MouseEvent e) {
-		int r = mouseToGridPos(e.getX());
-		int c = mouseToGridPos(e.getY());
+		int r = mouseToGridPos(e.getY());
+		int c = mouseToGridPos(e.getX());
 		if (r < 0 || c < 0 || r >= GRID_SIZE || c >= GRID_SIZE) {
 			return;
 		}
