@@ -17,6 +17,8 @@ public class Tile {
         this.r = r_;
         this.c = c_;
         this.multIsUsed = false;
+        this.horzWord = null;
+        this.vertWord = null;
         this.color = new Color(209, 209, 209);
         this.fontSize = fontSize_;
         this.text = TEXT;
@@ -51,6 +53,22 @@ public class Tile {
             return letter.getVal();
         }
         return -1;
+    }
+
+    public void setHorzWord(Word w) {
+        horzWord = w;
+    }
+
+    public void setVertWord(Word w) {
+        vertWord = w;
+    }
+
+    public Word horzWord() {
+        return horzWord;
+    }
+
+    public Word vertWord() {
+        return vertWord;
     }
 
     public void paintTile(Graphics2D g) {
@@ -120,6 +138,8 @@ public class Tile {
     protected int c;
     protected boolean isSelected;
     protected boolean multIsUsed;
+    protected Word horzWord;
+    protected Word vertWord;
     protected Color color;
     protected int fontSize;
     protected String text;

@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -18,7 +19,9 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 		this.addMouseMotionListener(this);
 		this.addKeyListener(this);
 		this.tiles = new Tile[GRID_SIZE][GRID_SIZE];
-		this.selected = null;
+		this.selectedTile = null;
+		this.words = new LinkedList<>();
+		this.selectedWord = null;
 		this.frameSize = frameSize_;
 		this.tileSize = (frameSize - ((GRID_SIZE - 1) * LINE_WIDTH)) / GRID_SIZE;
 		this.multTiles = new HashMap<>();
@@ -57,12 +60,58 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 		}
 	}
 
+	private void checkNewWord() {
+		System.out.println("Checking new word");
+		checkNewHorzWord();
+		checkNewVertWord();
+		for (Word w : words) {
+			System.out.println(w.word() + ": " + w.val());
+		}
+	}
+
+	private void checkNewHorzWord() {
+		Tile wordStart = selectedTile;
+		Tile prev = null;
+		while (wordStart != null && wordStart.hasLetter()) {
+			System.out.println("Start at tile " + wordStart.getLetter());
+			prev = wordStart;
+			wordStart = tileLeft(wordStart);
+		}
+		List<Tile> tilesInWord = new LinkedList<>();
+		wordStart = prev;
+		Tile wordEnd = wordStart;
+		while (wordEnd != null && wordEnd.hasLetter()) {
+			System.out.println("End at tile " + wordEnd.getLetter());
+			tilesInWord.add(wordEnd);
+			prev = wordEnd;
+			wordEnd = tileRight(wordEnd);
+		}
+		wordEnd = prev;
+		if (tilesInWord.size() > 1) {
+			removeWord(wordStart.horzWord());
+			removeWord(wordEnd.horzWord());
+			words.add(new Word(tilesInWord, Word.Direction.HORZ));
+			System.out.println("Added new word");
+		}
+	}
+
+	private void checkNewVertWord() {
+
+	}
+
+	private void removeWord(Word w) {
+		if (w != null) {
+			words.remove(w);
+			w.delete();
+		}
+	}
+
 	private void select(Tile t) {
-		if (selected != null) {
-			selected.unselect();
+		if (selectedTile != null) {
+			selectedTile.unselect();
 		}
 		t.select();
-		selected = t;
+		selectedTile = t;
 	}
 
 	private void selectTile(MouseEvent e) {
@@ -71,7 +120,7 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 		if (r < 0 || c < 0 || r >= GRID_SIZE || c >= GRID_SIZE) {
 			return;
 		}
-		if (selected == tiles[r][c]) {
+		if (selectedTile == tiles[r][c]) {
 			return;
 		}
 		select(tiles[r][c]);
@@ -85,32 +134,36 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 		return mousePos / (tileSize + LINE_WIDTH);
 	}
 
-	private void selectTileUp() {
-		int row = selected.getRow();
+	private Tile tileUp(Tile t) {
+		int row = t.getRow();
 		if (row > 0) {
-			select(tiles[row - 1][selected.getCol()]);
+			return tiles[row - 1][t.getCol()];
 		}
+		return null;
 	}
 
-	private void selectTileDown() {
-		int row = selected.getRow();
+	private Tile tileDown(Tile t) {
+		int row = t.getRow();
 		if (row < GRID_SIZE - 1) {
-			select(tiles[row + 1][selected.getCol()]);
+			return tiles[row + 1][t.getCol()];
 		}
+		return null;
 	}
 
-	private void selectTileRight() {
-		int col = selected.getCol();
+	private Tile tileRight(Tile t) {
+		int col = t.getCol();
 		if (col < GRID_SIZE - 1) {
-			select(tiles[selected.getRow()][col + 1]);
+			return tiles[t.getRow()][col + 1];
 		}
+		return null;
 	}
 
-	private void selectTileLeft() {
-		int col = selected.getCol();
+	private Tile tileLeft(Tile t) {
+		int col = t.getCol();
 		if (col > 0) {
-			select(tiles[selected.getRow()][col - 1]);
+			return tiles[t.getRow()][col - 1];
 		}
+		return null;
 	}
 
 	@Override 
@@ -126,33 +179,37 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 	@Override
 	public void keyTyped(KeyEvent e) {
 		char key = e.getKeyChar();
-		if (selected != null && (int) key == 8) {
-			selected.clearLetter();
+		if (selectedTile != null && (int) key == 8) {
+			selectedTile.clearLetter();
 			this.repaint();
 			return;
 		}
-		if (selected == null || (int) key < Letter.A_ASCII || 
-								(int) key > Letter.Z_ASCII) {
+		if (selectedTile == null || (int) key < Letter.A_ASCII || 
+									(int) key > Letter.Z_ASCII) {
 			return;
 		}
-		selected.setLetter(key);
+		selectedTile.setLetter(key);
 		this.repaint();
-		// checkForNewWord();
+		checkNewWord();
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int c = e.getKeyCode();
+		Tile nextSelected = null;
 		if (c == KeyEvent.VK_UP) {
-			selectTileUp();
+			nextSelected = tileUp(selectedTile);
 		} else if (c == KeyEvent.VK_DOWN) {
-			selectTileDown();
+			nextSelected = tileDown(selectedTile);
 		} else if (c == KeyEvent.VK_RIGHT) {
-			selectTileRight();
+			nextSelected = tileRight(selectedTile);
 		} else if (c == KeyEvent.VK_LEFT) {
-			selectTileLeft();
+			nextSelected = tileLeft(selectedTile);
 		}
-		this.repaint();
+		if (nextSelected != null) {
+			select(nextSelected);
+			this.repaint();
+		}
 	}
 
 	@Override
@@ -162,9 +219,9 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		if (selected != null) {
-			selected.unselect();
-			selected = null;
+		if (selectedTile != null) {
+			selectedTile.unselect();
+			selectedTile = null;
 			this.repaint();
 		}
 	}
@@ -188,7 +245,9 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 	public void keyReleased(KeyEvent e) { }
 
 	private Tile[][] tiles;
-	private Tile selected;
+	private Tile selectedTile;
+	private List<Word> words;
+	private Word selectedWord;
 	private int frameSize;
 	private int tileSize;
 	private HashMap<List<Integer>, Tile.Mult> multTiles; 

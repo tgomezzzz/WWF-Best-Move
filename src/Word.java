@@ -1,9 +1,15 @@
-import java.util.ArrayList;
+import java.util.List;
 
 public class Word {
+
+	public enum Direction {
+		HORZ,
+		VERT
+	}
 	
-	public Word(ArrayList<Tile> tiles_) {
+	public Word(List<Tile> tiles_, Direction direction_) {
 		this.tiles = tiles_;
+		this.direction = direction_;
 		computeWordValue();
 		getWordFromTiles();
 	}
@@ -14,7 +20,7 @@ public class Word {
 		int wordMult = 1;
 		for (Tile t : tiles) {
 			if (!t.hasLetter()) {
-				System.out.println("Error: Tile in Word has no Letter.");
+				System.err.println("Error: Tile in Word has no Letter.");
 				tiles.clear();
 				val = -1;
 			}
@@ -44,17 +50,43 @@ public class Word {
 		StringBuilder s = new StringBuilder();
 		for (Tile t : tiles) {
 			if (!t.hasLetter()) {
-				System.out.println("Error: Tile in Word has no Letter.");
+				System.err.println("Error: Tile in Word has no Letter.");
 				tiles.clear();
 				val = -1;
 				word = "";
+			}
+			if (direction == Direction.HORZ) {
+				t.setHorzWord(this);
+			} else {
+				t.setVertWord(this);
 			}
 			s.append(t.getLetter());
 		}
 		word = s.toString();
 	}
 
-	private ArrayList<Tile> tiles;
+	public void delete() {
+		for (Tile t : tiles) {
+			if (direction == Direction.HORZ) {
+				t.setHorzWord(null);
+			} else {
+				t.setVertWord(null);
+			}
+		}
+		val = 0;
+		word = "";
+	}
+
+	public int val() {
+		return val;
+	}
+
+	public String word() {
+		return word;
+	}
+
+	private List<Tile> tiles;
+	private Direction direction;
 	private int val;
 	private String word;
 }
