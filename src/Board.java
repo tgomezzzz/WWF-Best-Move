@@ -57,6 +57,14 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 		}
 	}
 
+	private void select(Tile t) {
+		if (selected != null) {
+			selected.unselect();
+		}
+		t.select();
+		selected = t;
+	}
+
 	private void selectTile(MouseEvent e) {
 		int r = mouseToGridPos(e.getY());
 		int c = mouseToGridPos(e.getX());
@@ -66,11 +74,7 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 		if (selected == tiles[r][c]) {
 			return;
 		}
-		if (selected != null) {
-			selected.unselect();
-		}
-		selected = tiles[r][c];
-		selected.select();
+		select(tiles[r][c]);
 		this.repaint();
 	}
 
@@ -79,6 +83,34 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 			return -1;
 		}
 		return mousePos / (tileSize + LINE_WIDTH);
+	}
+
+	private void selectTileUp() {
+		int row = selected.getRow();
+		if (row > 0) {
+			select(tiles[row - 1][selected.getCol()]);
+		}
+	}
+
+	private void selectTileDown() {
+		int row = selected.getRow();
+		if (row < GRID_SIZE - 1) {
+			select(tiles[row + 1][selected.getCol()]);
+		}
+	}
+
+	private void selectTileRight() {
+		int col = selected.getCol();
+		if (col < GRID_SIZE - 1) {
+			select(tiles[selected.getRow()][col + 1]);
+		}
+	}
+
+	private void selectTileLeft() {
+		int col = selected.getCol();
+		if (col > 0) {
+			select(tiles[selected.getRow()][col - 1]);
+		}
 	}
 
 	@Override 
@@ -99,10 +131,27 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 			this.repaint();
 			return;
 		}
-		if (selected == null || (int) key < 97 || (int) key > 122) {
+		if (selected == null || (int) key < Letter.A_ASCII || 
+								(int) key > Letter.Z_ASCII) {
 			return;
 		}
 		selected.setLetter(key);
+		this.repaint();
+		// checkForNewWord();
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		int c = e.getKeyCode();
+		if (c == KeyEvent.VK_UP) {
+			selectTileUp();
+		} else if (c == KeyEvent.VK_DOWN) {
+			selectTileDown();
+		} else if (c == KeyEvent.VK_RIGHT) {
+			selectTileRight();
+		} else if (c == KeyEvent.VK_LEFT) {
+			selectTileLeft();
+		}
 		this.repaint();
 	}
 
@@ -111,8 +160,8 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 		selectTile(e);
 	}
 
-    @Override
-    public void mouseExited(MouseEvent e) {
+	@Override
+	public void mouseExited(MouseEvent e) {
 		if (selected != null) {
 			selected.unselect();
 			selected = null;
@@ -123,20 +172,17 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 	@Override
 	public void mouseDragged(MouseEvent e) {}
 
-    @Override
-    public void mouseClicked(MouseEvent e) {}
-   
-    @Override
-    public void mouseEntered(MouseEvent e) {}
-   
-    @Override
-    public void mouseReleased(MouseEvent e) {}
-   
-    @Override
-    public void mousePressed(MouseEvent e) {}
-
 	@Override
-	public void keyPressed(KeyEvent e) { }
+	public void mouseClicked(MouseEvent e) {}
+   
+	@Override
+	public void mouseEntered(MouseEvent e) {}
+   
+	@Override
+	public void mouseReleased(MouseEvent e) {}
+   
+	@Override
+	public void mousePressed(MouseEvent e) {}
 
 	@Override
 	public void keyReleased(KeyEvent e) { }

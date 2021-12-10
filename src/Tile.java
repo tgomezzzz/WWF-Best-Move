@@ -16,6 +16,7 @@ public class Tile {
     public Tile(int r_, int c_, int fontSize_, Rectangle2D.Double paint_) {
         this.r = r_;
         this.c = c_;
+        this.multIsUsed = false;
         this.color = new Color(209, 209, 209);
         this.fontSize = fontSize_;
         this.text = TEXT;
@@ -38,18 +39,45 @@ public class Tile {
         }
     }
 
-    public void paintTile(Graphics2D g) {
-        if (letter != null) {
-            letter.drawLetter(g);
-        } else {
-            g.setColor(color);
-            if (isSelected) {
-                g.setColor(color.darker());
-            }
-            g.fill(paint);
-            g.draw(paint);   
-            drawText(g, text);         
+    public char getLetter() {
+        if (hasLetter()) {
+            return letter.getLetter();
         }
+        return 0;
+    }
+
+    public int getVal() {
+        if (hasLetter()) {
+            return letter.getVal();
+        }
+        return -1;
+    }
+
+    public void paintTile(Graphics2D g) {
+        if (isSelected) {
+            if (hasLetter()) {
+                if (mult != Mult.NONE) {
+                    fillTile(g, color);
+                }
+                letter.drawLetter(g);
+            } else {
+                fillTile(g, color.darker());
+                drawText(g, text);
+            }   
+        } else {
+            if (hasLetter()) {
+                letter.drawLetter(g); 
+            } else {
+                fillTile(g, color);
+                drawText(g, text);
+            }
+        } 
+    }
+
+    private void fillTile(Graphics2D g, Color c) {
+        g.setColor(c);
+        g.fill(paint);
+        g.draw(paint);
     }
 
     protected void drawText(Graphics2D g, String text) {
@@ -60,29 +88,38 @@ public class Tile {
                            (int) (paint.getCenterY() + strBounds.getHeight() / 4));
     }
 
-    protected void setLetter(Letter l) {
-        this.letter = l;
+    protected void setLetter(char c) {
+        letter = new Letter(c, paint);
     }
 
     protected void clearLetter() {
-        this.letter = null;
+        letter = null;
     }
 
-    protected void setLetter(char c) {
-        this.letter = new Letter(c, paint);
+    protected boolean hasLetter() {
+        return letter != null;
     }
 
-    protected int getX() {
+    protected int getRow() {
+        return r;
+    }
+
+    protected int getCol() {
+        return c;
+    }
+
+    protected int getPaintX() {
         return (int) paint.getCenterX();
     }
 
-    protected int getY() {
+    protected int getPaintY() {
         return (int) paint.getCenterY();
     }
 
     protected int r;
     protected int c;
     protected boolean isSelected;
+    protected boolean multIsUsed;
     protected Color color;
     protected int fontSize;
     protected String text;

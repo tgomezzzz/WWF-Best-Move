@@ -12,9 +12,4 @@ public class DLTile extends Tile {
         this.text = TEXT;
         this.mult = Mult.DOUBLE_LETTER;
     }
-
-    // @Override
-    // public void paintTile(Graphics2D g) {
-    //     super.paintTile(g);
-    // }
 }

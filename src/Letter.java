@@ -9,8 +9,17 @@ public class Letter {
         this.letter = Character.toUpperCase(letter_);
         this.val = getLetterValue(letter);
         this.color = new Color(253, 217, 181);
+        this.selectedColor = new Color(253, 217, 181, 150);
         this.isSelected = false;
         this.paint = paint_;
+    }
+
+    public char getLetter() {
+        return letter;
+    }
+
+    public int getVal() {
+        return val;
     }
 
     private int getLetterValue(char letter) {
@@ -24,7 +33,7 @@ public class Letter {
 
     public void drawLetter(Graphics2D g) {
         if (isSelected) {
-            g.setColor(color.darker());
+            g.setColor(selectedColor);
         } else {
             g.setColor(color);
         }
@@ -63,6 +72,7 @@ public class Letter {
     private char letter;
     private int val;
     private Color color;
+    private Color selectedColor;
     private boolean isSelected;
     private Rectangle2D.Double paint;
 
