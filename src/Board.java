@@ -1,18 +1,22 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.MouseEvent;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.KeyListener;
 
-public class Board extends JComponent implements MouseListener, MouseMotionListener {
+public class Board extends JComponent implements MouseListener, MouseMotionListener, KeyListener {
 
 	public Board(int frameSize_) {
+		this.setFocusable(true);
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
+		this.addKeyListener(this);
 		this.tiles = new Tile[GRID_SIZE][GRID_SIZE];
 		this.selected = null;
 		this.frameSize = frameSize_;
@@ -88,6 +92,16 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 	}
 
 	@Override
+	public void keyTyped(KeyEvent e) {
+		char key = e.getKeyChar();
+		if (selected == null || (int) key < 97 || (int) key > 122) {
+			return;
+		}
+		selected.setLetter(key);
+		this.repaint();
+	}
+
+	@Override
 	public void mouseMoved(MouseEvent e) {
 		selectTile(e);
 	}
@@ -115,6 +129,12 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
    
     @Override
     public void mousePressed(MouseEvent e) {}
+
+	@Override
+	public void keyPressed(KeyEvent e) { }
+
+	@Override
+	public void keyReleased(KeyEvent e) { }
 
 	private Tile[][] tiles;
 	private Tile selected;
