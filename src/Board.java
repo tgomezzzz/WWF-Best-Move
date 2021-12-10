@@ -94,6 +94,11 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 	@Override
 	public void keyTyped(KeyEvent e) {
 		char key = e.getKeyChar();
+		if (selected != null && (int) key == 8) {
+			selected.clearLetter();
+			this.repaint();
+			return;
+		}
 		if (selected == null || (int) key < 97 || (int) key > 122) {
 			return;
 		}

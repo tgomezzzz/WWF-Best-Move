@@ -60,11 +60,12 @@ public class Tile {
                            (int) (paint.getCenterY() + strBounds.getHeight() / 4));
     }
 
-    /**
-     * Consider adjusting return type, ie returning newly available spaces to play on.
-     */
     protected void setLetter(Letter l) {
         this.letter = l;
+    }
+
+    protected void clearLetter() {
+        this.letter = null;
     }
 
     protected void setLetter(char c) {

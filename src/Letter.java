@@ -6,7 +6,7 @@ import java.awt.Font;
 public class Letter {
     
     public Letter(char letter_, Rectangle2D.Double paint_) {
-        this.letter = letter_;
+        this.letter = Character.toUpperCase(letter_);
         this.val = getLetterValue(letter);
         this.color = new Color(253, 217, 181);
         this.isSelected = false;
