@@ -7,7 +7,7 @@ public class TrieNode {
         this.children = new HashMap<>();
         this.isWord = false;
     }
-
+    
     public boolean hasChild(char c) {
         return children.containsKey(c);
     }

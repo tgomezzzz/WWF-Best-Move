@@ -10,6 +10,11 @@ import java.util.List;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.KeyListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Board extends JComponent implements MouseListener, MouseMotionListener, KeyListener {
 
@@ -21,7 +26,7 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 		this.tiles = new Tile[GRID_SIZE][GRID_SIZE];
 		this.selectedTile = null;
 		this.words = new LinkedList<>();
-		this.selectedWord = null;
+		this.dict = buildTrie();
 		this.frameSize = frameSize_;
 		this.tileSize = (frameSize - ((GRID_SIZE - 1) * LINE_WIDTH)) / GRID_SIZE;
 		this.multTiles = new HashMap<>();
@@ -60,43 +65,59 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 		}
 	}
 
-	private void checkNewWord() {
-		System.out.println("Checking new word");
-		checkNewHorzWord();
-		checkNewVertWord();
-		for (Word w : words) {
-			System.out.println(w.word() + ": " + w.val());
-		}
+	public boolean isValidWord(String word) {
+		return dict.isWord(word);
 	}
 
-	private void checkNewHorzWord() {
-		Tile wordStart = selectedTile;
-		Tile prev = null;
-		while (wordStart != null && wordStart.hasLetter()) {
-			System.out.println("Start at tile " + wordStart.getLetter());
-			prev = wordStart;
-			wordStart = tileLeft(wordStart);
+	private void checkNewWord() {
+		checkNewHorzWord(selectedTile);
+		checkNewVertWord(selectedTile);
+	}
+
+	private void checkNewHorzWord(Tile t) {
+		if (t == null) {
+			return;
 		}
 		List<Tile> tilesInWord = new LinkedList<>();
-		wordStart = prev;
-		Tile wordEnd = wordStart;
+		Tile wordStart = t;
+		while (wordStart != null && wordStart.hasLetter()) {
+			tilesInWord.add(0, wordStart);
+			wordStart = tileLeft(wordStart);
+		}
+		Tile wordEnd = tileRight(t);
 		while (wordEnd != null && wordEnd.hasLetter()) {
-			System.out.println("End at tile " + wordEnd.getLetter());
 			tilesInWord.add(wordEnd);
-			prev = wordEnd;
 			wordEnd = tileRight(wordEnd);
 		}
-		wordEnd = prev;
-		if (tilesInWord.size() > 1) {
-			removeWord(wordStart.horzWord());
-			removeWord(wordEnd.horzWord());
-			words.add(new Word(tilesInWord, Word.Direction.HORZ));
-			System.out.println("Added new word");
+		int wordSize = tilesInWord.size();
+		if (wordSize > 1) {
+			removeWord(tilesInWord.get(0).horzWord());
+			removeWord(tilesInWord.get(wordSize - 1).horzWord());
+			words.add(new Word(tilesInWord, Word.Direction.HORZ, dict.isWord(tilesInWord)));
 		}
 	}
 
-	private void checkNewVertWord() {
-
+	private void checkNewVertWord(Tile t) {
+		if (t == null) {
+			return;
+		}
+		List<Tile> tilesInWord = new LinkedList<>();
+		Tile wordStart = t;
+		while (wordStart != null && wordStart.hasLetter()) {
+			tilesInWord.add(0, wordStart);
+			wordStart = tileUp(wordStart);
+		}
+		Tile wordEnd = tileDown(t);
+		while (wordEnd != null && wordEnd.hasLetter()) {
+			tilesInWord.add(wordEnd);
+			wordEnd = tileDown(wordEnd);
+		}
+		int wordSize = tilesInWord.size();
+		if (wordSize > 1) {
+			removeWord(tilesInWord.get(0).vertWord());
+			removeWord(tilesInWord.get(wordSize - 1).vertWord());
+			words.add(new Word(tilesInWord, Word.Direction.VERT, dict.isWord(tilesInWord)));
+		}
 	}
 
 	private void removeWord(Word w) {
@@ -111,7 +132,7 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 			selectedTile.unselect();
 		}
 		t.select();
-		selectedTile = t;
+		selectedTile = t;	
 	}
 
 	private void selectTile(MouseEvent e) {
@@ -174,6 +195,9 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 				t.paintTile(g);
 			}
 		}
+		if (selectedTile != null) {
+			selectedTile.paintTile(g);
+		}
 	}
 
 	@Override
@@ -181,6 +205,12 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 		char key = e.getKeyChar();
 		if (selectedTile != null && (int) key == 8) {
 			selectedTile.clearLetter();
+			removeWord(selectedTile.horzWord);
+			removeWord(selectedTile.vertWord);
+			checkNewVertWord(tileUp(selectedTile));
+			checkNewVertWord(tileDown(selectedTile));
+			checkNewHorzWord(tileLeft(selectedTile));
+			checkNewHorzWord(tileRight(selectedTile));
 			this.repaint();
 			return;
 		}
@@ -244,10 +274,31 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 	@Override
 	public void keyReleased(KeyEvent e) { }
 
+	public Trie buildTrie() {
+        Trie t = new Trie();
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader("../dict.txt"));
+        } catch (FileNotFoundException e) {
+            return null;
+        }
+        try {
+            String line = reader.readLine();
+            while (line != null) {
+                t.addWord(line);
+                line = reader.readLine();
+            }
+            reader.close();
+        } catch (IOException e) {
+            return null;
+        }
+        return t;
+    }
+
 	private Tile[][] tiles;
 	private Tile selectedTile;
 	private List<Word> words;
-	private Word selectedWord;
+	private Trie dict;
 	private int frameSize;
 	private int tileSize;
 	private HashMap<List<Integer>, Tile.Mult> multTiles; 

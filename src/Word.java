@@ -9,9 +9,10 @@ public class Word {
 		VERT
 	}
 	
-	public Word(List<Tile> tiles_, Direction direction_) {
+	public Word(List<Tile> tiles_, Direction direction_, boolean valid_) {
 		this.tiles = tiles_;
 		this.direction = direction_;
+		this.valid = valid_;
 		computeWordValue();
 		getWordFromTiles();
 	}
@@ -72,7 +73,7 @@ public class Word {
 			return;
 		}
 		Tile last = tiles.get(tiles.size() - 1);
-		if (val == 4) {
+		if (!valid) {
 			last.drawScore("!", INVALID_COLOR, g);
 		} else {
 			last.drawScore(Integer.toString(val), SCORE_COLOR, g);
@@ -103,6 +104,7 @@ public class Word {
 	private Direction direction;
 	private int val;
 	private String word;
+	private boolean valid;
 
 	private static final Color SCORE_COLOR = new Color(145, 255, 153);
 	private static final Color INVALID_COLOR = new Color(255, 131, 117);
