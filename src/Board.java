@@ -11,7 +11,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.KeyListener;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -23,6 +22,7 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 		this.addKeyListener(this);
+		this.setPreferredSize(new Dimension(frameSize_, frameSize_));
 		this.tiles = new Tile[GRID_SIZE][GRID_SIZE];
 		this.selectedTile = null;
 		this.words = new LinkedList<>();

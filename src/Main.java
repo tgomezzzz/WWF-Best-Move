@@ -6,19 +6,22 @@ public class Main {
     final static int FRAME_SIZE = 700;
 
     public static void main(String[] wordsWithFriends) {
-        // Trie words = buildTrie();
-        // if (words == null) {
-        //     System.out.println("Unable to build dictionary. Exiting.");
-        //     return;
-        // }
-
         JFrame frame = new JFrame();
-        Board b = new Board(FRAME_SIZE);
-        frame.getContentPane().add(b, BorderLayout.CENTER);
-        frame.pack();
-        frame.setSize(FRAME_SIZE, FRAME_SIZE + 100);
-        frame.setVisible(true);
+        frame.setName("Words With Friends Best Move Calculator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        Container content = frame.getContentPane();
+        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
+
+        Board b = new Board(FRAME_SIZE);
+        b.setAlignmentX(Component.CENTER_ALIGNMENT);
+        content.add(b);
+
+        Rack r = new Rack();
+        r.setAlignmentX(Component.CENTER_ALIGNMENT);
+        content.add(r);
+
+        frame.pack();
+        frame.setVisible(true);
     }
-    
 }
