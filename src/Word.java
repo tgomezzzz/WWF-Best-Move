@@ -1,4 +1,6 @@
 import java.util.List;
+import java.awt.Graphics2D;
+import java.awt.Color;
 
 public class Word {
 
@@ -65,6 +67,18 @@ public class Word {
 		word = s.toString();
 	}
 
+	public void drawScore(Graphics2D g) {
+		if (tiles.isEmpty()) {
+			return;
+		}
+		Tile last = tiles.get(tiles.size() - 1);
+		if (val == 4) {
+			last.drawScore("!", INVALID_COLOR, g);
+		} else {
+			last.drawScore(Integer.toString(val), SCORE_COLOR, g);
+		}
+	}
+
 	public void delete() {
 		for (Tile t : tiles) {
 			if (direction == Direction.HORZ) {
@@ -89,4 +103,7 @@ public class Word {
 	private Direction direction;
 	private int val;
 	private String word;
+
+	private static final Color SCORE_COLOR = new Color(145, 255, 153);
+	private static final Color INVALID_COLOR = new Color(255, 131, 117);
 }

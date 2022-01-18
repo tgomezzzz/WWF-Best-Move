@@ -1,4 +1,5 @@
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -29,14 +30,14 @@ public class Tile {
 
     public void select() {
         isSelected = true;
-        if (letter != null) {
+        if (hasLetter()) {
             letter.select();
         }
     }
 
     public void unselect() {
         isSelected = false;
-        if (letter != null) {
+        if (hasLetter()) {
             letter.unselect();
         }
     }
@@ -53,6 +54,14 @@ public class Tile {
             return letter.getVal();
         }
         return -1;
+    }
+
+    public boolean hasHorzWord() {
+        return horzWord != null;
+    }
+
+    public boolean hasVertWord() {
+        return vertWord != null;
     }
 
     public void setHorzWord(Word w) {
@@ -81,7 +90,8 @@ public class Tile {
             } else {
                 fillTile(g, color.darker());
                 drawText(g, text);
-            }   
+            }
+            paintWordScore(g);
         } else {
             if (hasLetter()) {
                 letter.drawLetter(g); 
@@ -90,6 +100,35 @@ public class Tile {
                 drawText(g, text);
             }
         } 
+    }
+
+    public void paintWordScore(Graphics2D g) {
+        if (hasHorzWord()) {
+            horzWord.drawScore(g);
+        }
+        if (hasVertWord()) {
+            vertWord.drawScore(g);
+        }
+    }
+
+    public void drawScore(String s, Color c, Graphics2D g) {
+        // placed correctly for vert word score only for tiles with vert and horz words
+        Rectangle2D strBounds = g.getFontMetrics().getStringBounds(s, g);
+        double rectX = paint.getMaxX() - 10;
+        double rectY = paint.getMaxY() - 5;
+        double width = strBounds.getWidth();
+        double padding = width / s.length();
+
+        RoundRectangle2D.Double bubble = 
+            new RoundRectangle2D.Double(rectX, rectY, width + padding, 13, 7, 7);
+        g.setColor(c);
+        g.fill(bubble);
+        g.draw(bubble);
+
+        g.setFont(new Font("Avenir", Font.PLAIN, (int) (fontSize / 1.5)));
+        g.setColor(Color.BLACK);
+        g.drawString(s, (int) (rectX + padding / 2),
+                        (int) (bubble.getCenterY() + strBounds.getHeight() / 3));
     }
 
     private void fillTile(Graphics2D g, Color c) {
