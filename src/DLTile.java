@@ -1,15 +1,15 @@
-import java.awt.geom.Rectangle2D;
 import java.awt.Color;
-import java.awt.Graphics2D;
 
 public class DLTile extends Tile {
 
     final static String TEXT = "DL";
+    final static Color COLOR = new Color(52, 149, 235);
 
-    public DLTile(int r_, int c_, int fSize_, Rectangle2D.Double paint_) {
-        super(r_, c_, fSize_, paint_);
-        this.color = new Color(52, 149, 235);
+    public DLTile(int size) {
+        super(size);
+        this.color = COLOR;
         this.text = TEXT;
         this.mult = Mult.DOUBLE_LETTER;
+        setBackground(color);
     }
 }

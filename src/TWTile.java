@@ -1,21 +1,16 @@
-import java.awt.geom.Rectangle2D;
 import java.awt.Color;
-import java.awt.Graphics2D;
 
 public class TWTile extends Tile {
 
 	final static String TEXT = "TW";
+	final static Color COLOR = new Color(235, 160, 49);
 	
-	public TWTile(int r_, int c_, int fSize_, Rectangle2D.Double paint_) {
-		super(r_, c_, fSize_, paint_);
-		this.color = new Color(235, 160, 49);
+	public TWTile(int size) {
+		super(size);
+		this.color = COLOR;
 		this.text = TEXT;
 		this.mult = Mult.TRIPLE_WORD;
+		setBackground(color);
 	}
 
-	// @Override
-	// public void paintTile(Graphics2D g) {
-    //     super.paintTile(g);
-	// 	super.drawText(g, TEXT);
-	// }
 }

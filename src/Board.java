@@ -18,11 +18,12 @@ import java.io.IOException;
 public class Board extends JComponent implements MouseListener, MouseMotionListener, KeyListener {
 
 	public Board(int frameSize_) {
-		this.setFocusable(true);
+		setFocusable(true);
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 		this.addKeyListener(this);
-		this.setPreferredSize(new Dimension(frameSize_, frameSize_));
+		setPreferredSize(new Dimension(frameSize_, frameSize_));
+		setLayout(new GridLayout(GRID_SIZE, GRID_SIZE, LINE_WIDTH, LINE_WIDTH));
 		this.tiles = new Tile[GRID_SIZE][GRID_SIZE];
 		this.selectedTile = null;
 		this.words = new LinkedList<>();
@@ -44,23 +45,24 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 				if (multTiles.containsKey(Arrays.asList(i, j))) {
 					switch (multTiles.get(Arrays.asList(i, j))) {
 						case DOUBLE_LETTER:
-							tiles[i][j] = new DLTile(i, j, fSize, tile);
+							tiles[i][j] = new DLTile(tileSize);
 							break;
 						case DOUBLE_WORD:
-							tiles[i][j] = new DWTile(i, j, fSize, tile);
+							tiles[i][j] = new DWTile(tileSize);
 							break;
 						case TRIPLE_LETTER:
-							tiles[i][j] = new TLTile(i, j, fSize, tile);
+							tiles[i][j] = new TLTile(tileSize);
 							break;
 						case TRIPLE_WORD:
-							tiles[i][j] = new TWTile(i, j, fSize, tile);
+							tiles[i][j] = new TWTile(tileSize);
 							break;
 						default:
-							tiles[i][j] = new Tile(i, j, fSize, tile);
+							tiles[i][j] = new Tile(tileSize);
 					}
 				} else {
-					tiles[i][j] = new Tile(i, j, fSize, tile);
+					tiles[i][j] = new Tile(tileSize);
 				}
+				add(tiles[i][j]);
 			}
 		}
 	}
@@ -187,18 +189,18 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 		return null;
 	}
 
-	@Override 
-	public void paintComponent(Graphics g_) {
-		Graphics2D g = (Graphics2D) g_;
-		for (Tile[] r : tiles) {
-			for (Tile t : r) {
-				t.paintTile(g);
-			}
-		}
-		if (selectedTile != null) {
-			selectedTile.paintTile(g);
-		}
-	}
+	// @Override 
+	// public void paintComponent(Graphics g_) {
+	// 	Graphics2D g = (Graphics2D) g_;
+	// 	for (Tile[] r : tiles) {
+	// 		for (Tile t : r) {
+	// 			t.paintTile(g);
+	// 		}
+	// 	}
+	// 	if (selectedTile != null) {
+	// 		selectedTile.paintTile(g);
+	// 	}
+	// }
 
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -245,7 +247,6 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		selectTile(e);
-		System.out.println("movedd");
 	}
 
 	@Override

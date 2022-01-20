@@ -1,10 +1,17 @@
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
+import javax.swing.JPanel;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Graphics;
 
-public class Tile {
+public class Tile extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
 
     public enum Mult {
         NONE,
@@ -13,21 +20,22 @@ public class Tile {
         TRIPLE_LETTER,
         TRIPLE_WORD
     }
-    
-    public Tile(int r_, int c_, int fontSize_, Rectangle2D.Double paint_) {
-        this.r = r_;
-        this.c = c_;
+
+    public Tile(int size) {
+        addMouseListener(this);
+        addMouseMotionListener(this);
+        this.paint = new Rectangle2D.Double(0, 0, size, size);
+        this.color = COLOR;
+        this.fontSize = size / 2;
         this.multIsUsed = false;
         this.horzWord = null;
         this.vertWord = null;
-        this.color = new Color(209, 209, 209);
-        this.fontSize = fontSize_;
         this.text = TEXT;
-        this.paint = paint_;
         this.mult = Mult.NONE;
         this.letter = null;
+        setBackground(color);
     }
-
+    
     public void select() {
         isSelected = true;
         if (hasLetter()) {
@@ -80,7 +88,11 @@ public class Tile {
         return vertWord;
     }
 
-    public void paintTile(Graphics2D g) {
+    @Override
+    public void paintComponent(Graphics g_) {
+    //public void paintTile(Graphics2D g) {
+        super.paintComponent(g_);
+        Graphics2D g = (Graphics2D) g_;
         if (isSelected) {
             if (hasLetter()) {
                 if (mult != Mult.NONE) {
@@ -132,9 +144,9 @@ public class Tile {
     }
 
     private void fillTile(Graphics2D g, Color c) {
-        g.setColor(c);
-        g.fill(paint);
-        g.draw(paint);
+        // g.setColor(c);
+        // g.fill(paint);
+        // g.draw(paint);
     }
 
     protected void drawText(Graphics2D g, String text) {
@@ -187,4 +199,63 @@ public class Tile {
     protected Letter letter;
 
     private static final String TEXT = "";
+    private static final Color COLOR = new Color(209, 209, 209);
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        setBackground(color.darker());     
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        setBackground(color);
+    }
 }
