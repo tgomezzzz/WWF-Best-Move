@@ -245,6 +245,7 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		selectTile(e);
+		System.out.println("movedd");
 	}
 
 	@Override

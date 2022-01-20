@@ -1,10 +1,15 @@
 import javax.swing.JComponent;
 import java.awt.geom.Rectangle2D;
 import java.awt.*;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseEvent;
 
-public class Rack extends JComponent {
+
+
+public class Rack extends JComponent implements MouseMotionListener {
 
     public Rack() {
+        this.addMouseMotionListener(this);
         this.tiles = new Tile[RACK_SIZE];
         this.setPreferredSize(new Dimension(700, 80));
         int tileSize = 50;
@@ -23,6 +28,15 @@ public class Rack extends JComponent {
 			t.paintTile(g);
 		}
 	}
+
+    	@Override
+	public void mouseMoved(MouseEvent e) {
+        System.out.println(e.getX() + ", " + e.getY());
+	}
+
+
+	@Override
+	public void mouseDragged(MouseEvent e) {}
 
     private Tile[] tiles;
     final private static int RACK_SIZE = 7;
