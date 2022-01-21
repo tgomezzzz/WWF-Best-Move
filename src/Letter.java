@@ -1,14 +1,18 @@
 import java.awt.Graphics2D;
+import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
+import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Font;
 
-public class Letter {
+public class Letter extends JPanel {
     
     public Letter(char letter_, Rectangle2D.Double paint_) {
         this.letter = Character.toUpperCase(letter_);
         this.val = getLetterValue(letter);
         this.color = new Color(253, 217, 181);
+        setPreferredSize(new Dimension(30, 30));
+        setBackground(color);
         this.selectedColor = new Color(253, 217, 181, 150);
         this.isSelected = false;
         this.paint = paint_;
@@ -29,6 +33,11 @@ public class Letter {
             return -1;
         }
         return LETTER_TO_VALUE[ascii - A_ASCII];
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
     }
 
     public void drawLetter(Graphics2D g) {

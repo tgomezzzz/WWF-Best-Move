@@ -1,5 +1,6 @@
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
+
 import javax.swing.JPanel;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -21,12 +22,13 @@ public class Tile extends JPanel implements MouseListener, MouseMotionListener, 
         TRIPLE_WORD
     }
 
-    public Tile(int size) {
+    public Tile() {
+        setFocusable(true);
         addMouseListener(this);
         addMouseMotionListener(this);
-        this.paint = new Rectangle2D.Double(0, 0, size, size);
+        addKeyListener(this);
         this.color = COLOR;
-        this.fontSize = size / 2;
+        this.font = new Font("Avenir", Font.PLAIN, (int) (getWidth() / 2));
         this.multIsUsed = false;
         this.horzWord = null;
         this.vertWord = null;
@@ -93,25 +95,29 @@ public class Tile extends JPanel implements MouseListener, MouseMotionListener, 
     //public void paintTile(Graphics2D g) {
         super.paintComponent(g_);
         Graphics2D g = (Graphics2D) g_;
-        if (isSelected) {
-            if (hasLetter()) {
-                if (mult != Mult.NONE) {
-                    fillTile(g, color);
-                }
-                letter.drawLetter(g);
-            } else {
-                fillTile(g, color.darker());
-                drawText(g, text);
-            }
-            paintWordScore(g);
-        } else {
-            if (hasLetter()) {
-                letter.drawLetter(g); 
-            } else {
-                fillTile(g, color);
-                drawText(g, text);
-            }
-        } 
+        // if (hasLetter()) {
+        //     letter.drawLetter(g);
+        //     System.out.println("has letter");
+        // }
+        // if (isSelected) {
+        //     if (hasLetter()) {
+        //         if (mult != Mult.NONE) {
+        //             fillTile(g, color);
+        //         }
+        //         letter.drawLetter(g);
+        //     } else {
+        //         fillTile(g, color.darker());
+        //         drawText(g, text);
+        //     }
+        //     paintWordScore(g);
+        // } else {
+        //     if (hasLetter()) {
+        //         letter.drawLetter(g); 
+        //     } else {
+        //         fillTile(g, color);
+        //         drawText(g, text);
+        //     }
+        // } 
     }
 
     public void paintWordScore(Graphics2D g) {
@@ -137,7 +143,7 @@ public class Tile extends JPanel implements MouseListener, MouseMotionListener, 
         g.fill(bubble);
         g.draw(bubble);
 
-        g.setFont(new Font("Avenir", Font.PLAIN, (int) (fontSize / 1.5)));
+        g.setFont(font);
         g.setColor(Color.BLACK);
         g.drawString(s, (int) (rectX + padding / 2),
                         (int) (bubble.getCenterY() + strBounds.getHeight() / 3));
@@ -150,15 +156,17 @@ public class Tile extends JPanel implements MouseListener, MouseMotionListener, 
     }
 
     protected void drawText(Graphics2D g, String text) {
-        g.setFont(new Font("Avenir", Font.PLAIN, fontSize));
-        g.setColor(Color.WHITE);
-        Rectangle2D strBounds = g.getFontMetrics().getStringBounds(text, g);
-        g.drawString(text, (int) (paint.getCenterX() - strBounds.getWidth() / 2),
-                           (int) (paint.getCenterY() + strBounds.getHeight() / 4));
+        // g.setFont(new Font("Avenir", Font.PLAIN, fontSize));
+        // g.setColor(Color.WHITE);
+        // Rectangle2D strBounds = g.getFontMetrics().getStringBounds(text, g);
+        // g.drawString("test", 100, 100);
+        // g.drawString(text, (int) ((getWidth() / 2) - strBounds.getWidth() / 2),
+        //                    (int) ((getHeight() / 2) + strBounds.getHeight() / 4));
     }
 
     protected void setLetter(char c) {
-        letter = new Letter(c, paint);
+        letter = new Letter(c, new Rectangle2D.Double(getX(), getY(), getWidth(), getHeight()));
+        add(letter);
     }
 
     protected void clearLetter() {
@@ -177,14 +185,6 @@ public class Tile extends JPanel implements MouseListener, MouseMotionListener, 
         return c;
     }
 
-    protected int getPaintX() {
-        return (int) paint.getCenterX();
-    }
-
-    protected int getPaintY() {
-        return (int) paint.getCenterY();
-    }
-
     protected int r;
     protected int c;
     protected boolean isSelected;
@@ -192,7 +192,7 @@ public class Tile extends JPanel implements MouseListener, MouseMotionListener, 
     protected Word horzWord;
     protected Word vertWord;
     protected Color color;
-    protected int fontSize;
+    protected Font font;
     protected String text;
     protected Rectangle2D.Double paint;
     protected Mult mult;
@@ -203,7 +203,25 @@ public class Tile extends JPanel implements MouseListener, MouseMotionListener, 
 
     @Override
     public void keyTyped(KeyEvent e) {
-        // TODO Auto-generated method stub
+        char key = e.getKeyChar();
+        System.out.println(getX());
+		if (hasLetter() && (int) key == 8) {
+			clearLetter();
+			//removeWord(horzWord);
+			//removeWord(selectedTile.vertWord);
+			//checkNewVertWord(tileUp(selectedTile));
+			//checkNewVertWord(tileDown(selectedTile));
+			//checkNewHorzWord(tileLeft(selectedTile));
+			//checkNewHorzWord(tileRight(selectedTile));
+			this.repaint();
+			return;
+		}
+		if ((int) key < Letter.A_ASCII || (int) key > Letter.Z_ASCII) {
+			return;
+		}
+		setLetter(key);
+		this.repaint();
+		//checkNewWord();
         
     }
 

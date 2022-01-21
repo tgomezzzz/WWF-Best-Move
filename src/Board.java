@@ -18,7 +18,7 @@ import java.io.IOException;
 public class Board extends JComponent implements MouseListener, MouseMotionListener, KeyListener {
 
 	public Board(int frameSize_) {
-		setFocusable(true);
+		//setFocusable(true);
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 		this.addKeyListener(this);
@@ -45,22 +45,22 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 				if (multTiles.containsKey(Arrays.asList(i, j))) {
 					switch (multTiles.get(Arrays.asList(i, j))) {
 						case DOUBLE_LETTER:
-							tiles[i][j] = new DLTile(tileSize);
+							tiles[i][j] = new DLTile();
 							break;
 						case DOUBLE_WORD:
-							tiles[i][j] = new DWTile(tileSize);
+							tiles[i][j] = new DWTile();
 							break;
 						case TRIPLE_LETTER:
-							tiles[i][j] = new TLTile(tileSize);
+							tiles[i][j] = new TLTile();
 							break;
 						case TRIPLE_WORD:
-							tiles[i][j] = new TWTile(tileSize);
+							tiles[i][j] = new TWTile();
 							break;
 						default:
-							tiles[i][j] = new Tile(tileSize);
+							tiles[i][j] = new Tile();
 					}
 				} else {
-					tiles[i][j] = new Tile(tileSize);
+					tiles[i][j] = new Tile();
 				}
 				add(tiles[i][j]);
 			}
@@ -204,25 +204,25 @@ public class Board extends JComponent implements MouseListener, MouseMotionListe
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		char key = e.getKeyChar();
-		if (selectedTile != null && (int) key == 8) {
-			selectedTile.clearLetter();
-			removeWord(selectedTile.horzWord);
-			removeWord(selectedTile.vertWord);
-			checkNewVertWord(tileUp(selectedTile));
-			checkNewVertWord(tileDown(selectedTile));
-			checkNewHorzWord(tileLeft(selectedTile));
-			checkNewHorzWord(tileRight(selectedTile));
-			this.repaint();
-			return;
-		}
-		if (selectedTile == null || (int) key < Letter.A_ASCII || 
-									(int) key > Letter.Z_ASCII) {
-			return;
-		}
-		selectedTile.setLetter(key);
-		this.repaint();
-		checkNewWord();
+		// char key = e.getKeyChar();
+		// if (selectedTile != null && (int) key == 8) {
+		// 	selectedTile.clearLetter();
+		// 	removeWord(selectedTile.horzWord);
+		// 	removeWord(selectedTile.vertWord);
+		// 	checkNewVertWord(tileUp(selectedTile));
+		// 	checkNewVertWord(tileDown(selectedTile));
+		// 	checkNewHorzWord(tileLeft(selectedTile));
+		// 	checkNewHorzWord(tileRight(selectedTile));
+		// 	this.repaint();
+		// 	return;
+		// }
+		// if (selectedTile == null || (int) key < Letter.A_ASCII || 
+		// 							(int) key > Letter.Z_ASCII) {
+		// 	return;
+		// }
+		// selectedTile.setLetter(key);
+		// this.repaint();
+		// checkNewWord();
 	}
 
 	@Override

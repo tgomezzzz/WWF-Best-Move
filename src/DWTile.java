@@ -5,8 +5,8 @@ public class DWTile extends Tile {
     final static String TEXT = "DW";
     final static Color COLOR = new Color(207, 85, 72);
     
-    public DWTile(int size) {
-        super(size);
+    public DWTile() {
+        super();
         this.color = COLOR;
         this.text = TEXT;
         this.mult = Mult.DOUBLE_WORD;

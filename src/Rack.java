@@ -8,11 +8,13 @@ import java.awt.event.MouseEvent;
 public class Rack extends JComponent implements MouseMotionListener {
 
     public Rack() {
-        this.addMouseMotionListener(this);
+        addMouseMotionListener(this);
+        setPreferredSize(new Dimension(400, 80));
+        setLayout(new GridLayout(1, 7, Board.LINE_WIDTH, Board.LINE_WIDTH));
         this.tiles = new Tile[RACK_SIZE];
-        this.setPreferredSize(new Dimension(700, 80));
         for (int i = 0; i < RACK_SIZE; i++) {
-            tiles[i] = new Tile(50);
+            tiles[i] = new Tile();
+            add(tiles[i]);
         }
     }
 
@@ -24,7 +26,7 @@ public class Rack extends JComponent implements MouseMotionListener {
 	// 	}
 	// }
 
-    	@Override
+    @Override
 	public void mouseMoved(MouseEvent e) {
         System.out.println(e.getX() + ", " + e.getY());
 	}
